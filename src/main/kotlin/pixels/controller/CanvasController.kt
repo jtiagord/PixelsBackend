@@ -17,8 +17,25 @@ class CanvasController(val canvasService: CanvasService){
        return canvasService.createCanvas(canvas.toCanvas())?.toCanvasOutputModel()
     }
 
+    @PostMapping ("/canvas/{canvasId}/shape")
+    fun createShape(@PathVariable canvasId : String , @RequestBody line : Shape) : Boolean{
+        return canvasService.addLine(canvasId,line)
+    }
+
     @PostMapping ("/canvas/{canvasId}/line")
-    fun createCanvas(@PathVariable canvasId : String , @RequestBody line : Shape) : Boolean{
+    fun createLine(@PathVariable canvasId : String , @RequestBody line : Line) : Boolean{
+        return canvasService.addLine(canvasId,line)
+    }
+    @PostMapping ("/canvas/{canvasId}/freedraw")
+    fun createFreeDraw(@PathVariable canvasId : String , @RequestBody line : FreeDraw) : Boolean{
+        return canvasService.addLine(canvasId,line)
+    }
+    @PostMapping ("/canvas/{canvasId}/circle")
+    fun createCanvas(@PathVariable canvasId : String , @RequestBody line : Circle) : Boolean{
+        return canvasService.addLine(canvasId,line)
+    }
+    @PostMapping ("/canvas/{canvasId}/rectangle")
+    fun createCanvas(@PathVariable canvasId : String , @RequestBody line : Rectangle) : Boolean{
         return canvasService.addLine(canvasId,line)
     }
 }

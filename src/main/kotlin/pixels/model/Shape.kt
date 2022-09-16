@@ -1,5 +1,10 @@
 package pixels.model
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import org.bson.codecs.pojo.annotations.BsonCreator
+import org.bson.codecs.pojo.annotations.BsonDiscriminator
+import org.bson.codecs.pojo.annotations.BsonProperty
 import kotlin.reflect.KClass
 
 enum class ShapeType(val type: String){
@@ -8,26 +13,40 @@ enum class ShapeType(val type: String){
     FREEDRAW("FREE"),
     RECTANGLE("RECT"),
 }
+@BsonDiscriminator(key = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
+    include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+    JsonSubTypes.Type(value = Rectangle::class, name = "RECT"),
+    JsonSubTypes.Type(value = Circle::class, name = "CIRCLE"),
+    JsonSubTypes.Type(value = FreeDraw::class, name = "FREE"),
+    JsonSubTypes.Type(value = Line::class, name = "LINE"),
+)
+abstract class Shape(val type : ShapeType)
 
-open class Shape(val type : ShapeType)
-
-data class Line  (
-    val pos1 : Position,
-    val pos2 : Position,
+@BsonDiscriminator(key= "type", value = "LINE")
+data class Line @BsonCreator constructor  (
+@BsonProperty("pos1") val pos1 : Position,
+@BsonProperty("pos2") val pos2 : Position,
 ) : Shape(ShapeType.LINE)
 
-data class Position(val x : Double, val y :Double)
+data class  Position @BsonCreator constructor (
+    @BsonProperty("x")  val x : Double,
+    @BsonProperty("y")  val y : Double)
 
+@BsonDiscriminator(key= "type", value =  "FREE")
 data class FreeDraw  (
-    val  positions : List<Position>
+    val positions : List<Position> = emptyList()
 ) : Shape(ShapeType.FREEDRAW)
 
-data class Circle  (
+@BsonDiscriminator(key= "type", value =  "CIRCLE")
+class Circle  (
     val startPos : Position,
     val radius : Double
 ) : Shape(ShapeType.CIRCLE)
 
-data class Square  (
+@BsonDiscriminator(key= "type", value =  "RECT")
+data class Rectangle  (
     val pos1 : Position,
     val pos2 : Position,
 ) : Shape(ShapeType.RECTANGLE)
