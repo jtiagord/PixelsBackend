@@ -41,7 +41,7 @@ data class FreeDraw  (
 
 @BsonDiscriminator(key= "type", value =  "CIRCLE")
 class Circle  (
-    val startPos : Position,
+    val centerPos : Position,
     val radius : Double
 ) : Shape(ShapeType.CIRCLE)
 

@@ -31,9 +31,9 @@ class CanvasService(database: MongoDatabase){
         return if (id == null) null else Canvas(id.asObjectId().value,c.width, c.height)
     }
 
-    fun addLine(canvasId : String , line : Shape) : Boolean{
+    fun addLine(canvasId : String, shape : Shape) : Boolean{
         val id = canvasId.toBase64URLtoHex()
-        val update = Updates.push("shapes", line)
+        val update = Updates.push("shapes", shape)
         val result = collection.updateOne(eq("_id",ObjectId(id)), update)
         return result.wasAcknowledged()
     }
